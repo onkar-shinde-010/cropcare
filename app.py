@@ -6,7 +6,8 @@ from tensorflow.keras.applications.efficientnet import preprocess_input
 import os, json
 from werkzeug.utils import secure_filename
 
-app = Flask(_name_)
+# FIXED HERE ↓↓↓
+app = Flask(__name__)
 
 UPLOAD_FOLDER = "static/uploads"
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
@@ -91,6 +92,7 @@ def predict():
         return render_template("index.html", error=f"Prediction Error: {str(e)}")
 
 
-if _name_ == "_main_":
+# FIXED HERE ↓↓↓
+if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5000))
     app.run(host="0.0.0.0", port=port)
