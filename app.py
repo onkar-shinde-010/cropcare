@@ -1,4 +1,5 @@
 from flask import Flask, render_template, request
+from flask_cors import CORS
 import tensorflow as tf
 from tensorflow.keras.models import load_model
 from tensorflow.keras.preprocessing.image import img_to_array, load_img
@@ -10,6 +11,7 @@ from dotenv import load_dotenv
 
 load_dotenv()
 app = Flask(__name__)
+CORS(app)
 
 # ------------------ Configuration ------------------
 UPLOAD_FOLDER = "static/uploads"

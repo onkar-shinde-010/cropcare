@@ -4,7 +4,7 @@ FROM python:3.11-slim
 # Set working directory inside the container
 WORKDIR /app
 
-# Install system dependencies needed for TensorFlow + image processing
+# Install system dependencies for TensorFlow + image processing
 RUN apt-get update && apt-get install -y --no-install-recommends \
     build-essential \
     libgl1 \
@@ -13,17 +13,17 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     zlib1g \
     && rm -rf /var/lib/apt/lists/*
 
-# Copy only requirements first (for caching)
+# Copy only requirements first for caching
 COPY requirements.txt .
 
-# Install Python dependencies
+# Install Python packages
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Copy the rest of the project
+# Copy the full app
 COPY . .
 
-# Expose port for Railway / Flask
+# Expose Flask port
 EXPOSE 5000
 
-# Start Flask app
+# Run Flask app
 CMD ["python", "app.py"]
