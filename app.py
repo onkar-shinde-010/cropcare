@@ -9,7 +9,7 @@ from PIL import Image
 import io
 import json
 
-app = Flask(_name_)
+app = Flask(__name__)
 CORS(app)   # allow all origins
 
 MODEL_PATH = "model/best_wheat_model.keras"
@@ -35,7 +35,7 @@ def safe_load_model(path):
 
         raise e
 
-# Load model once
+# Load model
 model = safe_load_model(MODEL_PATH)
 
 class_names = [
@@ -47,7 +47,6 @@ class_names = [
 def home():
     return "CropCareAI Model Server Running"
 
-# ---------------- SINGLE /api/predict ENDPOINT ----------------
 @app.route("/api/predict", methods=["POST"])
 def api_predict():
     if "file" not in request.files:
@@ -56,17 +55,14 @@ def api_predict():
     img_file = request.files["file"]
 
     try:
-        # read bytes
         img_bytes = img_file.read()
         img = Image.open(io.BytesIO(img_bytes)).convert("RGB")
 
-        # preprocess
         img = img.resize((256, 256))
         img_array = img_to_array(img)
         img_array = preprocess_input(img_array)
         img_array = np.expand_dims(img_array, 0)
 
-        # predict
         preds = model.predict(img_array)[0]
         index = int(np.argmax(preds))
 
@@ -79,7 +75,7 @@ def api_predict():
         return jsonify({"error": "Prediction failed", "details": str(e)}), 500
 
 
-if _name_ == "_main_":
+if __name__ == "__main__":
     import os
     port = int(os.environ.get("PORT", 5000))
     app.run(host="0.0.0.0", port=port)
